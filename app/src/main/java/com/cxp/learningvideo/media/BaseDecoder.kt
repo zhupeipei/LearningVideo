@@ -228,6 +228,9 @@ abstract class BaseDecoder(private val mFilePath: String): IDecoder {
     }
 
     private fun pushBufferToDecoder(): Boolean {
+        // 从输入缓冲区请求空闲的输入队列索引。
+        // timeoutUs：指定 MediaCodec 当前没有空闲输入队列时最大等待时间。
+        // 当请求到空闲队列后返回 ByteBuffer，将 ByteBuffer 填充数据后可调用 queueInputBuffer 加入编解码队列。
         var inputBufferIndex = mCodec!!.dequeueInputBuffer(1000)
         var isEndOfStream = false
 
@@ -236,7 +239,7 @@ abstract class BaseDecoder(private val mFilePath: String): IDecoder {
             val sampleSize = mExtractor!!.readBuffer(inputBuffer)
 
             if (sampleSize < 0) {
-                //如果数据已经取完，压入数据结束标志：MediaCodec.BUFFER_FLAG_END_OF_STREAM
+                // 如果数据已经取完，压入数据结束标志：MediaCodec.BUFFER_FLAG_END_OF_STREAM
                 mCodec!!.queueInputBuffer(inputBufferIndex, 0, 0,
                     0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
                 isEndOfStream = true
@@ -244,11 +247,20 @@ abstract class BaseDecoder(private val mFilePath: String): IDecoder {
                 mCodec!!.queueInputBuffer(inputBufferIndex, 0,
                     sampleSize, mExtractor!!.getCurrentTimestamp(), 0)
             }
+            // queueInputBuffer
+            // queueInputBuffer(int index, int offset, int size, long presentationTimeUs, int flags)
+            // 将指定 index 输入缓冲区加入编解码器队列，等待编解码操作。
+            // index : 输入的缓冲区索引 一般通过 dequeueInputBuffer 方法获取。
         }
         return isEndOfStream
     }
 
     private fun pullBufferFromDecoder(): Int {
+        // dequeueOutputBuffer(BufferInfo info, long timeoutUs)
+        // 请求完成编解码后的输出队列索引
+        // info: 接收当前编解码后的信息
+        // timeoutUs：指定 MediaCodec 当前没有数据输出事最大超时时间，
+
         // 查询是否有解码完成的数据，index >=0 时，表示数据有效，并且index为缓冲区索引
         var index = mCodec!!.dequeueOutputBuffer(mBufferInfo, 1000)
         when (index) {

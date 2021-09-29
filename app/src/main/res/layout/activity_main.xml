@@ -8,6 +8,12 @@
         tools:context=".MainActivity">
 
     <Button android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="学习---简单播放器"
+        android:onClick="clickMyMediaPlayer"
+        />
+
+    <Button android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="简单播放器"
             android:onClick="clickSimplePlayer"

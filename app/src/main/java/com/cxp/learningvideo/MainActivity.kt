@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import com.aire.MyMediaPlayerActivity
 import com.yanzhenjie.permission.AndPermission
 import com.yanzhenjie.permission.Permission
 
@@ -78,5 +79,9 @@ class MainActivity : AppCompatActivity() {
 
     fun clickFFmpegEncode(view: View?) {
         startActivity(Intent(this, FFEncodeActivity::class.java))
+    }
+
+    fun clickMyMediaPlayer(view: View) {
+        startActivity(Intent(this, MyMediaPlayerActivity::class.java))
     }
 }
